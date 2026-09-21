@@ -21,7 +21,7 @@ defmodule Phoenix.Template.EExEngine do
       end
 
     if html_format?(format) do
-      unless Code.ensure_loaded?(Phoenix.HTML.Engine) do
+      if not Code.ensure_loaded?(Phoenix.HTML.Engine) do
         raise "could not load Phoenix.HTML.Engine to use with .#{format}.eex templates. " <>
                 "You can configure your own format encoder for HTML but we recommend " <>
                 "adding phoenix_html as a dependency as it provides XSS protection."

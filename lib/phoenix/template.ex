@@ -42,17 +42,16 @@ defmodule Phoenix.Template do
 
   ### HTML formats
 
-  `.eex` templates are compiled with `Phoenix.HTML.Engine` only when the
-  encoder of their format is `Phoenix.HTML.Engine` itself. Templates of any
-  other format are compiled with `EEx.SmartEngine`, which interpolates
-  values as is.
+  `.html.eex` templates are compiled and encoded with `Phoenix.HTML.Engine`,
+  which provides HTML safety. Other formats are compiled with `EEx.SmartEngine`,
+  which interpolates values as is.
 
   A format that renders HTML-like markup but needs its own encoder, for
   example one that post-processes the rendered markup, can be compiled
   with `Phoenix.HTML.Engine` too by listing it in the `:html_formats` option:
 
       config :phoenix_template, :format_encoders, mjml: MyApp.MJML
-      config :phoenix_template, :html_formats, [:mjml]
+      config :phoenix_template, :html_formats, [:html, :mjml]
 
   Its templates are then compiled exactly like `.html.eex` ones. Interpolated
   values are escaped unless they are marked as safe, such as with
@@ -63,8 +62,10 @@ defmodule Phoenix.Template do
         def encode_to_iodata!({:safe, mjml}), do: MyApp.MJML.to_html(mjml)
       end
 
-  This requires `phoenix_html` as a dependency.
+  In case the `{:safe, ...}` tuple is not received, you should raise, as it means
+  the user likely has not configured the `html_formats` accordingly.
 
+  This requires `phoenix_html` as a dependency.
   """
 
   @type path :: binary
